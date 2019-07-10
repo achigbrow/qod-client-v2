@@ -4,7 +4,7 @@
   <string name="dialog_done">Done</string>
   <string name="dialog_next">Next</string>
   <string name="random_quote_title">Random Quote</string>
-  <string name="combined_quote_pattern" formatted="false">%s%n%n\t\t&#x2014; %s</string>
+  <string formatted="false" name="combined_quote_pattern">%s%n%n\t\t&#x2014; %s</string>
   <string name="source_delimiter">,&#x00A0;</string>
   <string name="unknown_source">(unknown)</string>
   <string name="search_term_hint">Search term</string>
@@ -13,4 +13,5 @@
   <string name="random_quote_tooltip">Display random quote</string>
   <string name="search_title_format">Search: %s</string>
   <string name="search_all">All quotes</string>
+  <string name="authentication_error">Unable to authenticate user</string>
 </resources>
