@@ -1,10 +1,14 @@
 package edu.cnm.deepdive.qodclient.controller;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.widget.TooltipCompat;
@@ -12,8 +16,10 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import edu.cnm.deepdive.qodclient.LoginActivity;
 import edu.cnm.deepdive.qodclient.R;
 import edu.cnm.deepdive.qodclient.model.Quote;
+import edu.cnm.deepdive.qodclient.service.GoogleSignInService;
 import edu.cnm.deepdive.qodclient.viewmodel.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +35,25 @@ public class MainActivity extends AppCompatActivity {
     setupSearch();
     setupFab();
     setupViewModel();
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.options, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    boolean handled = true;
+    switch (item.getItemId()) {
+      case R.id.sign_out:
+        signOut();
+        break;
+      default:
+        handled = super.onOptionsItemSelected(item);
+    }
+    return handled;
   }
 
   private void setupSearch() {
@@ -84,11 +109,22 @@ public class MainActivity extends AppCompatActivity {
         .setMessage(quote.getCombinedText(getString(R.string.combined_quote_pattern),
             getString(R.string.source_delimiter), getString(R.string.unknown_source)))
         .setTitle(title)
-        .setNegativeButton(R.string.dialog_done, (dialogInterface, i) -> {});
+        .setNegativeButton(R.string.dialog_done, (dialogInterface, i) -> {
+        });
     if (nextAction != null) {
       builder.setPositiveButton(R.string.dialog_next, (dialogInterface, i) -> nextAction.run());
     }
     builder.create().show();
+  }
+
+  private void signOut() {
+    GoogleSignInService service = GoogleSignInService.getInstance();
+    service.getClient().signOut().addOnCompleteListener((task) -> {
+      service.setAccount(null);
+      Intent intent = new Intent(this, LoginActivity.class);
+      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+      startActivity(intent);
+    });
   }
 
 }
